@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLU Lost & Found</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🕵️‍♂️ KLU Lost & Found</h1>
+    <p>Submit what you lost and help others find it!</p>
+  </header>
+
+  <main>
+    <section class="report-section">
+      <h2>Report Lost Item</h2>
+      <form id="lostForm">
+        <input type="text" id="itemName" placeholder="What did you lose?" required>
+        <textarea id="itemDesc" placeholder="Describe your item..." required></textarea>
+        <input type="text" id="itemLocation" placeholder="Where did you lose it?" required>
+        <input type="text" id="contactInfo" placeholder="Your contact (email or phone)" required>
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+
+    <section class="items-section">
+      <h2>Lost Items List</h2>
+      <div id="lostItems" class="items"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 KLU Lost & Found | Created by Students</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("lostForm");
+    const lostItemsDiv = document.getElementById("lostItems");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("itemName").value;
+      const desc = document.getElementById("itemDesc").value;
+      const loc = document.getElementById("itemLocation").value;
+      const contact = document.getElementById("contactInfo").value;
+
+      // Create a card for the lost item
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `
+        <h3>Lost: ${name}</h3>
+        <p>${desc}</p>
+        <p><strong>📍 Location:</strong> ${loc}</p>
+        <p><strong>📞 Contact:</strong> ${contact}</p>
+      `;
+
+      // Add the card to the list
+      lostItemsDiv.prepend(card);
+
+      // Save to localStorage so it stays even after refresh
+      const currentData = JSON.parse(localStorage.getItem("lostItems"))  [];
+      currentData.unshift({ name, desc, loc, contact });
+      localStorage.setItem("lostItems", JSON.stringify(currentData));
+
+      // Reset form
+      form.reset();
+    });
+
+    // Load saved data on page load
+    window.addEventListener("load", () => {
+      const saved = JSON.parse(localStorage.getItem("lostItems"))  [];
+      saved.forEach(item => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+          <h3> Lost: ${item.name}</h3>
+          <p>${item.desc}</p>
+          <p><strong>📍 Location:</strong> ${item.loc}</p>
+          <p><strong>📞 Contact:</strong> ${item.contact}</p>
+        `;
+        lostItemsDiv.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>
